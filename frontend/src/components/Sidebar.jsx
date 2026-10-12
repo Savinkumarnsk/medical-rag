@@ -1,13 +1,13 @@
 import { useState, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, FileText, RefreshCw, CheckCircle, AlertCircle, Loader2, Trash2 } from 'lucide-react';
+import { Upload, FileText, RefreshCw, CheckCircle, AlertCircle, Loader2, Sparkles, Layers } from 'lucide-react';
 import { useDocuments } from '../hooks/useDocuments';
 
 const FILE_ICONS = {
-  pdf: '📄',
-  docx: '📝',
-  txt: '📃',
-  md: '📋',
+  pdf: '📕',
+  docx: '📘',
+  txt: '📄',
+  md: '📑',
 };
 
 export default function Sidebar({ darkMode, onToggleDark }) {
@@ -56,41 +56,34 @@ export default function Sidebar({ darkMode, onToggleDark }) {
 
   return (
     <aside
-      className="w-72 flex-shrink-0 flex flex-col h-full border-r"
-      style={{ background: 'var(--sidebar-bg)', borderColor: 'var(--border-color)' }}
+      className="w-72 flex-shrink-0 flex flex-col h-full z-20 liquid-glass-sidebar relative"
     >
-      {/* Header */}
-      <div className="p-4 border-b" style={{ borderColor: 'var(--border-color)' }}>
-        <div className="flex items-center gap-2 mb-1">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-teal-500 to-cyan-600 flex items-center justify-center shadow-sm">
-            <span className="text-white text-sm font-bold">M</span>
+      {/* Brand Header */}
+      <div className="p-4 border-b border-purple-500/15">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 via-purple-600 to-fuchsia-500 p-[1.5px] shadow-lg shadow-purple-600/30">
+            <div className="w-full h-full bg-[#0d0722] rounded-[14px] flex items-center justify-center">
+              <span className="text-lg">🩺</span>
+            </div>
           </div>
           <div>
-            <h1 className="font-bold text-sm" style={{ color: 'var(--text-primary)' }}>
-              MedDoc RAG
-            </h1>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              Medical Document AI
+            <h2 className="font-heading font-bold text-sm tracking-wide neon-text-gradient">
+              Clinical Vault
+            </h2>
+            <p className="text-[11px] font-medium text-purple-300/60">
+              FAISS Indexed Knowledge
             </p>
           </div>
-          <button
-            onClick={onToggleDark}
-            className="ml-auto btn-ghost p-1.5 rounded-lg text-sm"
-            aria-label="Toggle dark mode"
-            title="Toggle dark mode"
-          >
-            {darkMode ? '☀️' : '🌙'}
-          </button>
         </div>
       </div>
 
       {/* Upload Zone */}
       <div className="p-3">
         <div
-          className={`relative border-2 border-dashed rounded-xl p-4 text-center cursor-pointer transition-all duration-200 ${
+          className={`relative rounded-2xl p-4 text-center cursor-pointer transition-all duration-300 backdrop-blur-md ${
             dragOver
-              ? 'border-teal-500 bg-teal-50 dark:bg-teal-950'
-              : 'border-slate-200 dark:border-slate-700 hover:border-teal-400'
+              ? 'border-2 border-fuchsia-400 bg-purple-900/40 shadow-lg shadow-purple-500/20 scale-[1.02]'
+              : 'border border-purple-500/25 bg-purple-950/20 hover:border-purple-400/50 hover:bg-purple-900/25 hover:shadow-md hover:shadow-purple-900/30'
           }`}
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
@@ -110,71 +103,77 @@ export default function Sidebar({ darkMode, onToggleDark }) {
             onChange={(e) => handleFiles(e.target.files)}
           />
           {uploading ? (
-            <div className="space-y-2">
-              <Loader2 className="w-6 h-6 animate-spin mx-auto text-teal-500" />
-              <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-                Uploading... {uploadProgress}%
+            <div className="space-y-2.5 py-1">
+              <Loader2 className="w-6 h-6 animate-spin mx-auto text-purple-400" />
+              <p className="text-xs font-semibold text-purple-200">
+                Indexing Chunks... {uploadProgress}%
               </p>
-              <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-1.5">
+              <div className="w-full bg-purple-950/60 border border-purple-500/20 rounded-full h-2 overflow-hidden p-0.5">
                 <motion.div
-                  className="bg-teal-500 h-1.5 rounded-full"
+                  className="bg-gradient-to-r from-violet-500 via-purple-500 to-fuchsia-500 h-full rounded-full"
                   animate={{ width: `${uploadProgress}%` }}
                 />
               </div>
             </div>
           ) : (
             <>
-              <Upload className="w-5 h-5 mx-auto mb-1.5 text-teal-500" />
-              <p className="text-xs font-medium" style={{ color: 'var(--text-secondary)' }}>
-                Drop files or click to upload
+              <div className="w-9 h-9 rounded-xl bg-purple-500/15 border border-purple-400/20 flex items-center justify-center mx-auto mb-2 text-purple-300 shadow-sm">
+                <Upload className="w-4 h-4" />
+              </div>
+              <p className="text-xs font-semibold text-purple-100">
+                Drop documents or click
               </p>
-              <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>
+              <p className="text-[11px] text-purple-300/50 mt-0.5">
                 PDF, DOCX, TXT, MD
               </p>
             </>
           )}
         </div>
 
+        {/* Re-index Button */}
         <button
           onClick={handleReindex}
           disabled={loading}
-          className="w-full mt-2 flex items-center justify-center gap-1.5 text-xs font-medium py-2 px-3 rounded-lg
-                     border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800
-                     transition-colors disabled:opacity-50"
-          style={{ color: 'var(--text-secondary)' }}
+          className="w-full mt-2.5 flex items-center justify-center gap-2 text-xs font-semibold py-2 px-3 rounded-xl
+                     border border-purple-500/20 bg-purple-950/30 text-purple-200 hover:bg-purple-900/40 hover:border-purple-400/40
+                     transition-all duration-200 shadow-sm cursor-pointer disabled:opacity-50"
           aria-label="Re-index all documents"
         >
-          <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-          Re-index All
+          <RefreshCw className={`w-3.5 h-3.5 text-purple-300 ${loading ? 'animate-spin' : ''}`} />
+          Re-sync Vector Store
         </button>
       </div>
 
       {/* Documents List */}
-      <div className="flex-1 overflow-y-auto px-3 pb-3">
-        <p className="text-xs font-semibold uppercase tracking-wide mb-2 px-1"
-           style={{ color: 'var(--text-muted)' }}>
-          Documents ({documents.length})
-        </p>
+      <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-2">
+        <div className="flex items-center justify-between px-1.5 pt-1">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-purple-300/60 flex items-center gap-1.5">
+            <Layers className="w-3 h-3 text-purple-400" />
+            Corpus Files
+          </p>
+          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-900/40 border border-purple-500/20 text-purple-300">
+            {documents.length}
+          </span>
+        </div>
 
         {loading && !documents.length ? (
-          <div className="space-y-2">
+          <div className="space-y-2 pt-1">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-12 rounded-lg animate-pulse"
-                   style={{ background: 'var(--bg-secondary)' }} />
+              <div key={i} className="h-14 rounded-xl bg-purple-950/20 border border-purple-500/10 animate-pulse" />
             ))}
           </div>
         ) : documents.length === 0 ? (
-          <div className="text-center py-6">
-            <FileText className="w-8 h-8 mx-auto mb-2" style={{ color: 'var(--text-muted)' }} />
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              No documents indexed yet.
+          <div className="text-center py-8 px-2 rounded-2xl border border-dashed border-purple-500/20 bg-purple-950/10 mt-2">
+            <FileText className="w-8 h-8 mx-auto mb-2 text-purple-400/40" />
+            <p className="text-xs font-medium text-purple-200/70">
+              No medical files indexed.
             </p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-              Upload files to get started.
+            <p className="text-[11px] text-purple-300/40 mt-0.5">
+              Drag clinical papers above.
             </p>
           </div>
         ) : (
-          <div className="space-y-1.5">
+          <div className="space-y-2 pt-1">
             <AnimatePresence>
               {documents.map((doc, i) => (
                 <motion.div
@@ -182,23 +181,21 @@ export default function Sidebar({ darkMode, onToggleDark }) {
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: i * 0.03 }}
-                  className="p-2.5 rounded-lg border"
-                  style={{
-                    background: 'var(--bg-secondary)',
-                    borderColor: 'var(--border-color)',
-                  }}
+                  className="p-2.5 rounded-xl border border-purple-500/20 bg-purple-950/25 hover:bg-purple-900/35 hover:border-purple-400/45 transition-all duration-200 shadow-sm group"
                 >
-                  <div className="flex items-start gap-2">
-                    <span className="text-sm flex-shrink-0">
+                  <div className="flex items-start gap-2.5">
+                    <span className="text-base flex-shrink-0 mt-0.5">
                       {FILE_ICONS[doc.file_type] || '📄'}
                     </span>
                     <div className="min-w-0 flex-1">
-                      <p className="text-xs font-medium truncate" style={{ color: 'var(--text-primary)' }}>
+                      <p className="text-xs font-semibold truncate text-purple-100 group-hover:text-white transition-colors">
                         {doc.source}
                       </p>
-                      <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                        {doc.page_count} page{doc.page_count !== 1 ? 's' : ''} · {doc.chunks} chunks
-                      </p>
+                      <div className="flex items-center gap-1.5 text-[10px] text-purple-300/60 mt-0.5">
+                        <span>{doc.page_count} p.</span>
+                        <span>•</span>
+                        <span className="font-mono text-purple-300/80">{doc.chunks} chunks</span>
+                      </div>
                     </div>
                   </div>
                 </motion.div>
@@ -208,23 +205,23 @@ export default function Sidebar({ darkMode, onToggleDark }) {
         )}
       </div>
 
-      {/* Toast */}
+      {/* Floating Liquid Glass Toast */}
       <AnimatePresence>
         {toast && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className={`mx-3 mb-3 p-3 rounded-lg text-xs font-medium flex items-center gap-2 ${
+            initial={{ opacity: 0, y: 12, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className={`mx-3 mb-3 p-3 rounded-xl text-xs font-semibold flex items-center gap-2 backdrop-blur-xl shadow-xl ${
               toast.type === 'error'
-                ? 'bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800'
-                : 'bg-emerald-50 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
+                ? 'bg-rose-950/80 text-rose-200 border border-rose-500/40 shadow-rose-900/30'
+                : 'bg-purple-950/85 text-purple-100 border border-purple-400/50 shadow-purple-900/40'
             }`}
           >
             {toast.type === 'error'
-              ? <AlertCircle className="w-4 h-4 flex-shrink-0" />
-              : <CheckCircle className="w-4 h-4 flex-shrink-0" />}
-            {toast.msg}
+              ? <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+              : <CheckCircle className="w-4 h-4 flex-shrink-0 text-fuchsia-400" />}
+            <span className="truncate">{toast.msg}</span>
           </motion.div>
         )}
       </AnimatePresence>
