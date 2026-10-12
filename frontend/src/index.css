@@ -1,0 +1,186 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --border-color: #e2e8f0;
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --accent: #0d9488;
+    --accent-light: #ccfbf1;
+    --accent-hover: #0f766e;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  }
+
+  .dark {
+    --bg-primary: #0a0f1e;
+    --bg-secondary: #111827;
+    --sidebar-bg: #0f172a;
+    --card-bg: #1e293b;
+    --border-color: #1e293b;
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --text-muted: #64748b;
+    --accent: #14b8a6;
+    --accent-light: #042f2e;
+    --accent-hover: #0d9488;
+    --shadow: 0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.35), 0 4px 6px -2px rgba(0,0,0,0.2);
+  }
+
+  * {
+    border-color: var(--border-color);
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--text-muted);
+  }
+}
+
+@layer components {
+  .glass {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .dark .glass {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .btn-primary {
+    @apply bg-teal-600 hover:bg-teal-700 text-white font-medium px-4 py-2 rounded-lg
+           transition-all duration-200 active:scale-95 shadow-sm;
+  }
+
+  .btn-ghost {
+    @apply hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400
+           font-medium px-3 py-2 rounded-lg transition-all duration-200 active:scale-95;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .input-base {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 8px 12px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    width: 100%;
+    outline: none;
+  }
+  .input-base:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+  }
+  .input-base::placeholder {
+    color: var(--text-muted);
+  }
+
+  .step-badge {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full;
+  }
+
+  .typing-dot {
+    @apply w-2 h-2 rounded-full bg-teal-500 animate-bounce;
+  }
+
+  .citation-chip {
+    @apply inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full
+           bg-teal-50 dark:bg-teal-950 text-teal-700 dark:text-teal-300
+           border border-teal-200 dark:border-teal-800
+           cursor-pointer hover:bg-teal-100 dark:hover:bg-teal-900
+           transition-colors duration-150;
+  }
+
+  /* Markdown prose styles */
+  .prose-medical {
+    @apply text-sm leading-relaxed;
+    color: var(--text-primary);
+  }
+  .prose-medical h1, .prose-medical h2, .prose-medical h3 {
+    @apply font-semibold mt-4 mb-2;
+    color: var(--text-primary);
+  }
+  .prose-medical p {
+    @apply mb-3;
+  }
+  .prose-medical ul, .prose-medical ol {
+    @apply ml-4 mb-3 space-y-1;
+  }
+  .prose-medical li {
+    @apply pl-1;
+  }
+  .prose-medical ul li { list-style-type: disc; }
+  .prose-medical ol li { list-style-type: decimal; }
+  .prose-medical strong {
+    @apply font-semibold;
+  }
+  .prose-medical code {
+    @apply font-mono text-xs bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded;
+  }
+  .prose-medical table {
+    @apply w-full text-xs border-collapse mb-3;
+  }
+  .prose-medical th {
+    @apply bg-teal-50 dark:bg-teal-950 font-semibold text-left px-3 py-2 border border-slate-200 dark:border-slate-700;
+  }
+  .prose-medical td {
+    @apply px-3 py-2 border border-slate-200 dark:border-slate-700;
+  }
+  .prose-medical blockquote {
+    @apply border-l-4 border-teal-400 pl-4 text-slate-600 dark:text-slate-400 italic mb-3;
+  }
+  .prose-medical hr {
+    @apply border-slate-200 dark:border-slate-700 my-4;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
