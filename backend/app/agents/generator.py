@@ -37,27 +37,36 @@ def _build_context(docs: List[Document]) -> str:
 
 
 def _extract_citations(answer: str, docs: List[Document]) -> List[Dict[str, str]]:
-    """Extract [Source: X, p.Y] citations from the answer with full chunk content and metadata."""
-    pattern = r"\[Source:\s*([^,\]]+),\s*[pP]\.?\s*(\d+)\]"
+    """Extract citations from the answer and ensure all retrieved context chunks are available with full text."""
+    pattern = r"\[(?:Source:\s*)?([^,\]\n]+?)(?:,\s*(?:[pP]age|[pP])\.?\s*(\d+))?\]"
     matches = re.findall(pattern, answer)
     seen = set()
     citations = []
+
     for source, page in matches:
-        key = (source.strip(), page.strip())
+        s_clean = source.strip()
+        p_clean = page.strip() if page else ""
+
+        # Validate that it matches a known doc or extension
+        is_known = any(s_clean.lower() in str(d.metadata.get("source", "")).lower() for d in docs)
+        has_ext = any(s_clean.lower().endswith(ext) for ext in [".pdf", ".docx", ".txt", ".md"])
+        if not (is_known or has_ext):
+            continue
+
+        key = (s_clean.lower(), p_clean)
         if key not in seen:
             seen.add(key)
             matching_doc = None
-            # Match by both source and page first
             for doc in docs:
-                d_src = str(doc.metadata.get("source", "")).strip()
+                d_src = str(doc.metadata.get("source", "")).strip().lower()
                 d_page = str(doc.metadata.get("page", "")).strip()
-                if d_src == source.strip() and (d_page == page.strip() or not page.strip()):
+                if (d_src == s_clean.lower() or s_clean.lower() in d_src) and (d_page == p_clean or not p_clean):
                     matching_doc = doc
                     break
-            # Fallback to source-only match
             if not matching_doc:
                 for doc in docs:
-                    if str(doc.metadata.get("source", "")).strip() == source.strip():
+                    d_src = str(doc.metadata.get("source", "")).strip().lower()
+                    if d_src == s_clean.lower() or s_clean.lower() in d_src:
                         matching_doc = doc
                         break
 
@@ -66,13 +75,32 @@ def _extract_citations(answer: str, docs: List[Document]) -> List[Dict[str, str]
             chunk_id = matching_doc.metadata.get("chunk_id", "") if matching_doc else ""
 
             citations.append({
-                "source": source.strip(),
-                "page": page.strip(),
+                "source": matching_doc.metadata.get("source", s_clean) if matching_doc else s_clean,
+                "page": str(matching_doc.metadata.get("page", p_clean or "1")) if matching_doc else (p_clean or "1"),
                 "snippet": full_content,
                 "content": full_content,
                 "section": section,
                 "chunk_id": chunk_id,
             })
+
+    # Always ensure every retrieved document chunk is available in citations
+    for i, doc in enumerate(docs, start=1):
+        d_src = str(doc.metadata.get("source", "Document")).strip()
+        d_page = str(doc.metadata.get("page", "1")).strip()
+        already_present = any(
+            c.get("source", "").lower() == d_src.lower() and str(c.get("page", "")) == d_page
+            for c in citations
+        )
+        if not already_present:
+            citations.append({
+                "source": d_src,
+                "page": d_page,
+                "snippet": doc.page_content,
+                "content": doc.page_content,
+                "section": doc.metadata.get("section", ""),
+                "chunk_id": doc.metadata.get("chunk_id", f"chunk-{i}"),
+            })
+
     return citations
 
 

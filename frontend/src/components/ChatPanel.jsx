@@ -26,17 +26,21 @@ function TypingIndicator() {
 function CitationChips({ citations, onCitationClick }) {
   if (!citations?.length) return null;
   return (
-    <div className="flex flex-wrap gap-2 mt-3.5 pt-2 border-t border-purple-500/15">
+    <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-2 border-t border-purple-500/15">
+      <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300/60 mr-1 flex items-center gap-1">
+        📚 Evidence Chunks ({citations.length}):
+      </span>
       {citations.map((c, i) => (
         <button
           key={i}
-          onClick={() => onCitationClick(c)}
+          onClick={() => onCitationClick(c, citations, i)}
           className="citation-chip-liquid"
-          aria-label={`View source: ${c.source}, page ${c.page}`}
+          aria-label={`View source chunk ${i + 1}: ${c.source}, page ${c.page}`}
+          title="Click to view full un-truncated text chunk"
         >
           <span>📎</span>
-          <span>{c.source}</span>
-          <span className="text-purple-300 font-mono text-[10px] px-1 py-0.5 rounded bg-purple-900/40">
+          <span className="max-w-[150px] truncate">{c.source}</span>
+          <span className="text-purple-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-purple-900/50">
             p.{c.page}
           </span>
         </button>
@@ -149,7 +153,11 @@ function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
 }
 
 export default function ChatPanel({ messages, isLoading, currentStep, streamingTokens, onSend, onRegenerate }) {
-  const [selectedCitation, setSelectedCitation] = useState(null);
+  const [drawerState, setDrawerState] = useState({
+    isOpen: false,
+    citations: [],
+    activeIndex: 0,
+  });
   const [input, setInput] = useState('');
 
   const STARTER_QUESTIONS = [
@@ -226,7 +234,13 @@ export default function ChatPanel({ messages, isLoading, currentStep, streamingT
                 <MessageBubble
                   key={msg.id}
                   msg={msg}
-                  onCitationClick={setSelectedCitation}
+                  onCitationClick={(c, allCitations, idx) =>
+                    setDrawerState({
+                      isOpen: true,
+                      citations: allCitations || [c],
+                      activeIndex: idx || 0,
+                    })
+                  }
                   onRegenerate={i === messages.length - 1 && msg.role === 'assistant' ? onRegenerate : null}
                   isLast={i === messages.length - 1}
                 />
@@ -314,8 +328,10 @@ export default function ChatPanel({ messages, isLoading, currentStep, streamingT
 
       {/* Grounded Source Drawer */}
       <SourceDrawer
-        citation={selectedCitation}
-        onClose={() => setSelectedCitation(null)}
+        isOpen={drawerState.isOpen}
+        citations={drawerState.citations}
+        activeIndex={drawerState.activeIndex}
+        onClose={() => setDrawerState(prev => ({ ...prev, isOpen: false }))}
       />
     </div>
   );
