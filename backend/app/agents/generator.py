@@ -37,7 +37,7 @@ def _build_context(docs: List[Document]) -> str:
 
 
 def _extract_citations(answer: str, docs: List[Document]) -> List[Dict[str, str]]:
-    """Extract [Source: X, p.Y] citations from the answer."""
+    """Extract [Source: X, p.Y] citations from the answer with full chunk content and metadata."""
     pattern = r"\[Source:\s*([^,\]]+),\s*[pP]\.?\s*(\d+)\]"
     matches = re.findall(pattern, answer)
     seen = set()
@@ -46,16 +46,32 @@ def _extract_citations(answer: str, docs: List[Document]) -> List[Dict[str, str]
         key = (source.strip(), page.strip())
         if key not in seen:
             seen.add(key)
-            # Find the matching doc for snippet
-            snippet = ""
+            matching_doc = None
+            # Match by both source and page first
             for doc in docs:
-                if doc.metadata.get("source", "") == source.strip():
-                    snippet = doc.page_content[:300]
+                d_src = str(doc.metadata.get("source", "")).strip()
+                d_page = str(doc.metadata.get("page", "")).strip()
+                if d_src == source.strip() and (d_page == page.strip() or not page.strip()):
+                    matching_doc = doc
                     break
+            # Fallback to source-only match
+            if not matching_doc:
+                for doc in docs:
+                    if str(doc.metadata.get("source", "")).strip() == source.strip():
+                        matching_doc = doc
+                        break
+
+            full_content = matching_doc.page_content if matching_doc else ""
+            section = matching_doc.metadata.get("section", "") if matching_doc else ""
+            chunk_id = matching_doc.metadata.get("chunk_id", "") if matching_doc else ""
+
             citations.append({
                 "source": source.strip(),
                 "page": page.strip(),
-                "snippet": snippet,
+                "snippet": full_content,
+                "content": full_content,
+                "section": section,
+                "chunk_id": chunk_id,
             })
     return citations
 
