@@ -22,7 +22,7 @@ function DisclaimerFooter() {
       <div className="hidden md:flex items-center gap-3 text-xs" style={{ color: 'var(--text-muted)' }}>
         <span className="flex items-center gap-1.5 font-medium text-purple-300/80">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-          LangGraph RAG v1.0
+          System Online
         </span>
       </div>
     </div>
@@ -79,7 +79,7 @@ export default function App() {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-base font-bold tracking-tight font-heading neon-text-gradient">
-                  MedDoc Liquid RAG
+                  MedDoc Intelligence
                 </h1>
                 <span className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-purple-950/70 border border-purple-500/30 text-purple-200">
                   <Activity className="w-3 h-3 text-emerald-400" />
@@ -87,7 +87,7 @@ export default function App() {
                 </span>
               </div>
               <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
-                Multi-Agent Clinical Intelligence · LangGraph · FAISS Vector Engine
+                Multi-Agent Clinical Intelligence · Evidence-Based Grounding
               </p>
             </div>
           </div>

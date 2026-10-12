@@ -71,7 +71,7 @@ export default function Sidebar({ darkMode, onToggleDark }) {
               Clinical Vault
             </h2>
             <p className="text-[11px] font-medium text-purple-300/60">
-              FAISS Indexed Knowledge
+              Verified Document Library
             </p>
           </div>
         </div>
@@ -140,7 +140,7 @@ export default function Sidebar({ darkMode, onToggleDark }) {
           aria-label="Re-index all documents"
         >
           <RefreshCw className={`w-3.5 h-3.5 text-purple-300 ${loading ? 'animate-spin' : ''}`} />
-          Re-sync Vector Store
+          Re-sync Knowledge Base
         </button>
       </div>
 

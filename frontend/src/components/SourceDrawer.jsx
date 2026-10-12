@@ -75,7 +75,7 @@ export default function SourceDrawer({ citations = [], activeIndex = 0, isOpen =
                     </span>
                   </h2>
                   <p className="text-[11px] text-purple-300/70">
-                    Exact Un-truncated Text Retrieved from Vector Store
+                    Exact Un-truncated Text from Verified Documents
                   </p>
                 </div>
               </div>
@@ -235,7 +235,7 @@ export default function SourceDrawer({ citations = [], activeIndex = 0, isOpen =
               {/* Clinical Verification Notice */}
               <div className="p-4 rounded-xl bg-purple-950/40 border border-purple-500/25">
                 <p className="text-xs leading-relaxed text-purple-200/80">
-                  ⚕️ <strong>Evidence Grounding:</strong> The multi-agent pipeline retrieved this exact text passage from your local vector index and used it to formulate and cross-verify the answer.
+                  ⚕️ <strong>Evidence Grounding:</strong> The multi-agent pipeline retrieved this exact text passage directly from your documents to formulate and ground the answer.
                 </p>
               </div>
             </div>
