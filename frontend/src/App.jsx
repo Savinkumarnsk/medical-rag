@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import ChatPanel from './components/ChatPanel';
 import { useChat } from './hooks/useChat';
-import { Sparkles, Activity, Trash2 } from 'lucide-react';
+import { Sparkles, Activity, Trash2, Plus } from 'lucide-react';
 
 function DisclaimerFooter() {
   return (
@@ -93,14 +93,27 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Green (Emerald) Button: New Consultation */}
+            <button
+              onClick={clearMessages}
+              className="btn-liquid-emerald text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer"
+              aria-label="Start new consultation"
+              title="Start a fresh clinical consultation"
+            >
+              <Plus className="w-3.5 h-3.5 text-emerald-300 stroke-[2.5]" />
+              <span>New Chat</span>
+            </button>
+
+            {/* Red (Rose) Button: Clear Chat */}
             {messages.length > 0 && (
               <button
                 onClick={clearMessages}
-                className="btn-ghost-purple text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer"
+                className="btn-ghost-rose text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer"
                 aria-label="Clear conversation"
+                title="Clear message history"
               >
-                <Trash2 className="w-3.5 h-3.5 text-purple-300" />
-                Clear Chat
+                <Trash2 className="w-3.5 h-3.5 text-rose-400" />
+                <span>Clear</span>
               </button>
             )}
           </div>

@@ -84,18 +84,20 @@ export default function SourceDrawer({ citations = [], activeIndex = 0, isOpen =
                 {fullText && (
                   <button
                     onClick={handleCopy}
-                    className="btn-ghost-purple text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer"
+                    className={`text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-xl cursor-pointer ${
+                      copied ? 'btn-ghost-emerald' : 'btn-ghost-cyan'
+                    }`}
                     aria-label="Copy full chunk"
-                    title="Copy full text"
+                    title={copied ? "Copied" : "Copy full text"}
                   >
                     {copied ? (
                       <>
-                        <CheckCheck className="w-3.5 h-3.5 text-fuchsia-400" />
-                        <span className="text-fuchsia-300">Copied</span>
+                        <CheckCheck className="w-3.5 h-3.5 text-emerald-300" />
+                        <span className="text-emerald-200">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5 text-purple-300" />
+                        <Copy className="w-3.5 h-3.5 text-sky-300" />
                         <span>Copy</span>
                       </>
                     )}
@@ -105,9 +107,10 @@ export default function SourceDrawer({ citations = [], activeIndex = 0, isOpen =
                 <button
                   onClick={onClose}
                   aria-label="Close source drawer"
-                  className="btn-ghost-purple p-2 rounded-xl text-purple-300 hover:text-white cursor-pointer"
+                  className="btn-ghost-rose p-2 rounded-xl text-rose-300 hover:text-white cursor-pointer"
+                  title="Close vault"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-4 h-4 text-rose-400" />
                 </button>
               </div>
             </div>
@@ -131,20 +134,22 @@ export default function SourceDrawer({ citations = [], activeIndex = 0, isOpen =
                   ))}
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <button
                     onClick={handlePrev}
                     disabled={validIndex === 0}
-                    className="p-1 rounded-lg border border-purple-500/20 text-purple-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-purple-900/30 cursor-pointer"
+                    className="p-1.5 rounded-lg border border-sky-500/25 bg-sky-950/20 text-sky-300 disabled:opacity-25 disabled:cursor-not-allowed hover:bg-sky-900/40 hover:border-sky-400/50 cursor-pointer transition-all"
                     aria-label="Previous chunk"
+                    title="Previous chunk"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                   <button
                     onClick={handleNext}
                     disabled={validIndex === citations.length - 1}
-                    className="p-1 rounded-lg border border-purple-500/20 text-purple-300 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-purple-900/30 cursor-pointer"
+                    className="p-1.5 rounded-lg border border-sky-500/25 bg-sky-950/20 text-sky-300 disabled:opacity-25 disabled:cursor-not-allowed hover:bg-sky-900/40 hover:border-sky-400/50 cursor-pointer transition-all"
                     aria-label="Next chunk"
+                    title="Next chunk"
                   >
                     <ChevronRight className="w-4 h-4" />
                   </button>

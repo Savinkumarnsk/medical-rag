@@ -128,21 +128,24 @@ function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
 
             {!msg.isError && (
               <div className="flex flex-wrap items-center justify-between gap-2.5 mt-4 pt-3 border-t border-purple-500/15">
-                {/* Action buttons (Copy / Regenerate) */}
+                {/* Action buttons (Copy / Regenerate in Cyan & Emerald) */}
                 <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1.5 text-xs btn-ghost-purple rounded-xl cursor-pointer"
+                    className={`text-xs cursor-pointer ${
+                      copied ? 'btn-ghost-emerald' : 'btn-ghost-cyan'
+                    }`}
                     aria-label="Copy answer"
+                    title={copied ? "Copied to clipboard" : "Copy full response"}
                   >
                     {copied ? (
                       <>
-                        <CheckCheck className="w-3.5 h-3.5 text-fuchsia-400" />
-                        <span className="text-fuchsia-300">Copied</span>
+                        <CheckCheck className="w-3.5 h-3.5 text-emerald-300" />
+                        <span className="text-emerald-200">Copied</span>
                       </>
                     ) : (
                       <>
-                        <Copy className="w-3.5 h-3.5 text-purple-300" />
+                        <Copy className="w-3.5 h-3.5 text-sky-300" />
                         <span>Copy</span>
                       </>
                     )}
@@ -150,10 +153,11 @@ function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
                   {isLast && onRegenerate && (
                     <button
                       onClick={onRegenerate}
-                      className="flex items-center gap-1.5 text-xs btn-ghost-purple rounded-xl cursor-pointer"
+                      className="btn-ghost-cyan text-xs cursor-pointer"
                       aria-label="Regenerate answer"
+                      title="Re-run synthesis"
                     >
-                      <RefreshCw className="w-3.5 h-3.5 text-purple-300" />
+                      <RefreshCw className="w-3.5 h-3.5 text-sky-300" />
                       <span>Regenerate</span>
                     </button>
                   )}
@@ -345,7 +349,7 @@ export default function ChatPanel({ messages, isLoading, currentStep, streamingT
             type="submit"
             id="send-button"
             disabled={isLoading || !input.trim()}
-            className="btn-liquid-purple flex-shrink-0 h-12 px-6 flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none"
+            className="btn-liquid-cyan flex-shrink-0 h-12 px-6 flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none shadow-lg shadow-cyan-600/20"
             aria-label="Send question"
           >
             <span className="text-sm font-semibold tracking-wide">Ask AI</span>

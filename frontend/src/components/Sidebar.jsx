@@ -130,17 +130,16 @@ export default function Sidebar({ darkMode, onToggleDark }) {
           )}
         </div>
 
-        {/* Re-index Button */}
+        {/* Re-index Button in Emerald Green Liquid Glass */}
         <button
           onClick={handleReindex}
           disabled={loading}
-          className="w-full mt-2.5 flex items-center justify-center gap-2 text-xs font-semibold py-2 px-3 rounded-xl
-                     border border-purple-500/20 bg-purple-950/30 text-purple-200 hover:bg-purple-900/40 hover:border-purple-400/40
-                     transition-all duration-200 shadow-sm cursor-pointer disabled:opacity-50"
+          className="btn-liquid-emerald w-full mt-2.5 flex items-center justify-center gap-2 text-xs font-semibold py-2 px-3 rounded-xl cursor-pointer disabled:opacity-50"
           aria-label="Re-index all documents"
+          title="Re-synchronize and refresh knowledge base index"
         >
-          <RefreshCw className={`w-3.5 h-3.5 text-purple-300 ${loading ? 'animate-spin' : ''}`} />
-          Re-sync Knowledge Base
+          <RefreshCw className={`w-3.5 h-3.5 text-emerald-200 ${loading ? 'animate-spin' : ''}`} />
+          <span>Re-sync Knowledge Base</span>
         </button>
       </div>
 
