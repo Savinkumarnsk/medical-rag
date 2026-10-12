@@ -1,6 +1,6 @@
 """
 main.py — FastAPI application entry point.
-Configured with Google Gemini (gemini-3.6-flash) primary and OpenRouter fallback.
+Configured with Google Gemini (gemini-3.5-flash-lite) primary and OpenRouter fallback.
 """
 from __future__ import annotations
 
