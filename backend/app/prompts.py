@@ -132,9 +132,6 @@ Output format (use markdown):
 **Supporting Details:**
 <bullet points with inline citations>
 
-**Sources:**
-<list each cited source>
-
 **Disclaimer:** This information is from documents only and is not medical advice. \
 Consult a qualified healthcare professional for personal medical guidance.
 """

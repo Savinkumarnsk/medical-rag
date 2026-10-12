@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Copy, CheckCheck, RefreshCw, User, Bot, Sparkles, Send, ArrowUp } from 'lucide-react';
+import { Copy, CheckCheck, RefreshCw, User, Bot, Sparkles, Send, ArrowUp, BookOpen } from 'lucide-react';
 import AgentStepTracker from './AgentStepTracker';
 import SourceDrawer from './SourceDrawer';
 
@@ -23,30 +23,45 @@ function TypingIndicator() {
   );
 }
 
-function CitationChips({ citations, onCitationClick }) {
-  if (!citations?.length) return null;
-  return (
-    <div className="flex flex-wrap items-center gap-2 mt-3.5 pt-2 border-t border-purple-500/15">
-      <span className="text-[11px] font-bold uppercase tracking-wider text-purple-300/60 mr-1 flex items-center gap-1">
-        📚 Evidence Chunks ({citations.length}):
-      </span>
-      {citations.map((c, i) => (
-        <button
-          key={i}
-          onClick={() => onCitationClick(c, citations, i)}
-          className="citation-chip-liquid"
-          aria-label={`View source chunk ${i + 1}: ${c.source}, page ${c.page}`}
-          title="Click to view full un-truncated text chunk"
-        >
-          <span>📎</span>
-          <span className="max-w-[150px] truncate">{c.source}</span>
-          <span className="text-purple-300 font-mono text-[10px] px-1.5 py-0.5 rounded bg-purple-900/50">
-            p.{c.page}
-          </span>
-        </button>
-      ))}
-    </div>
+/**
+ * Strips raw "Sources:" section from the message markdown so sources are not duplicated
+ * in the text and only displayed when the user explicitly clicks the "View Sources" button.
+ */
+function cleanMessageMarkdown(content) {
+  if (!content) return '';
+  let cleaned = content.replace(
+    /(?:^|\n)\s*(?:#{1,4}\s*)?(?:\*\*|__)?Sources:?(?:\*\*|__)?\s*[\s\S]*?(?=(?:\n\s*(?:#{1,4}\s*)?(?:\*\*|__)?Disclaimer:|$))/i,
+    ''
   );
+  return cleaned.trim();
+}
+
+/**
+ * Extracts available citations from the message object or fallback regex from text.
+ */
+function extractAvailableCitations(msg) {
+  if (msg?.citations && Array.isArray(msg.citations) && msg.citations.length > 0) {
+    return msg.citations;
+  }
+  const text = msg?.content || '';
+  const citationRegex = /(?:\[(?:Source:\s*)?([^,\]\n]+?)(?:,\s*(?:[pP]age|[pP])\.?\s*(\d+))?\]|(?:^|\n)\s*([a-zA-Z0-9_\-\.]+\.(?:md|pdf|txt|docx))(?:\s*,\s*[pP]\.?\s*(\d+))?)/gi;
+  const found = [];
+  const seen = new Set();
+  let match;
+  while ((match = citationRegex.exec(text)) !== null) {
+    const src = (match[1] || match[3] || '').trim();
+    const pg = (match[2] || match[4] || '1').trim();
+    if (src && src.length > 2 && !seen.has(src.toLowerCase() + '_' + pg)) {
+      seen.add(src.toLowerCase() + '_' + pg);
+      found.push({
+        source: src,
+        page: pg,
+        snippet: `Referenced document chunk: ${src}, Page ${pg}`,
+        content: `Referenced document chunk: ${src}, Page ${pg}`,
+      });
+    }
+  }
+  return found;
 }
 
 function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
@@ -59,6 +74,8 @@ function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
   };
 
   const isUser = msg.role === 'user';
+  const availableCitations = !isUser ? extractAvailableCitations(msg) : [];
+  const cleanedMarkdown = !isUser ? cleanMessageMarkdown(msg.content) : msg.content;
 
   return (
     <motion.div
@@ -104,17 +121,15 @@ function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
             ) : (
               <div className="prose-medical">
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                  {msg.content}
+                  {cleanedMarkdown}
                 </ReactMarkdown>
               </div>
             )}
 
             {!msg.isError && (
-              <>
-                <CitationChips citations={msg.citations} onCitationClick={onCitationClick} />
-
-                {/* Action buttons */}
-                <div className="flex items-center gap-2 mt-4 pt-3 border-t border-purple-500/15">
+              <div className="flex flex-wrap items-center justify-between gap-2.5 mt-4 pt-3 border-t border-purple-500/15">
+                {/* Action buttons (Copy / Regenerate) */}
+                <div className="flex items-center gap-2">
                   <button
                     onClick={handleCopy}
                     className="flex items-center gap-1.5 text-xs btn-ghost-purple rounded-xl cursor-pointer"
@@ -143,7 +158,20 @@ function MessageBubble({ msg, onCitationClick, onRegenerate, isLast }) {
                     </button>
                   )}
                 </div>
-              </>
+
+                {/* On-Demand Source Button: Clicking opens full un-truncated sources in the drawer */}
+                {availableCitations.length > 0 && (
+                  <button
+                    onClick={() => onCitationClick(availableCitations[0], availableCitations, 0)}
+                    className="btn-source-liquid"
+                    title="Click to inspect verified source documents & complete text chunks"
+                    aria-label={`View ${availableCitations.length} source documents`}
+                  >
+                    <BookOpen className="w-3.5 h-3.5 text-fuchsia-300 animate-pulse" />
+                    <span>View Sources ({availableCitations.length})</span>
+                  </button>
+                )}
+              </div>
             )}
           </div>
         )}
@@ -267,7 +295,7 @@ export default function ChatPanel({ messages, isLoading, currentStep, streamingT
                     {streamingTokens ? (
                       <div className="prose-medical">
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                          {streamingTokens}
+                          {cleanMessageMarkdown(streamingTokens)}
                         </ReactMarkdown>
                       </div>
                     ) : (
@@ -286,7 +314,7 @@ export default function ChatPanel({ messages, isLoading, currentStep, streamingT
         className="p-4 border-t backdrop-blur-2xl z-20"
         style={{
           borderColor: 'rgba(168, 85, 247, 0.16)',
-          background: 'rgba(9, 5, 24, 0.72)',
+          background: 'rgba(8, 3, 22, 0.42)',
         }}
       >
         <form onSubmit={handleSubmit} className="flex gap-2.5 items-end max-w-4xl mx-auto">

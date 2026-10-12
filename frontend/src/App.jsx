@@ -7,10 +7,10 @@ import { Sparkles, Activity, Trash2 } from 'lucide-react';
 function DisclaimerFooter() {
   return (
     <div
-      className="flex-shrink-0 py-2.5 px-6 flex items-center justify-between border-t z-10 backdrop-blur-md"
+      className="flex-shrink-0 py-2.5 px-6 flex items-center justify-between border-t z-10 backdrop-blur-2xl"
       style={{
         borderColor: 'rgba(168, 85, 247, 0.14)',
-        background: 'rgba(7, 4, 18, 0.65)',
+        background: 'rgba(7, 3, 20, 0.42)',
       }}
     >
       <div className="flex items-center gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
@@ -50,10 +50,11 @@ export default function App() {
     <div className="flex h-screen overflow-hidden relative select-none" style={{ background: 'var(--bg-primary)' }}>
       {/* ── Dynamic Ambient Liquid Plasma Aurora Orbs ── */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-32 -left-28 w-[450px] h-[450px] rounded-full bg-violet-600/25 blur-[125px] animate-aurora-1" />
-        <div className="absolute top-1/4 -right-24 w-[480px] h-[480px] rounded-full bg-fuchsia-600/20 blur-[135px] animate-aurora-2" />
-        <div className="absolute -bottom-24 left-1/4 w-[520px] h-[520px] rounded-full bg-purple-700/20 blur-[140px] animate-aurora-3" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] rounded-full bg-indigo-500/10 blur-[110px] animate-pulse-glow" />
+        <div className="absolute -top-32 -left-28 w-[580px] h-[580px] rounded-full bg-violet-600/35 blur-[120px] animate-aurora-1" />
+        <div className="absolute top-1/4 -right-24 w-[620px] h-[620px] rounded-full bg-fuchsia-600/30 blur-[130px] animate-aurora-2" />
+        <div className="absolute -bottom-28 left-1/4 w-[660px] h-[660px] rounded-full bg-purple-700/30 blur-[140px] animate-aurora-3" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[450px] rounded-full bg-indigo-500/20 blur-[110px] animate-pulse-glow" />
+        <div className="absolute bottom-10 right-1/3 w-[380px] h-[380px] rounded-full bg-violet-400/15 blur-[125px] animate-aurora-2" />
       </div>
 
       {/* ── Liquid Glass Sidebar ── */}
@@ -63,10 +64,10 @@ export default function App() {
       <main className="flex-1 flex flex-col min-w-0 relative z-10">
         {/* Top Liquid Glass Header */}
         <header
-          className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-b backdrop-blur-xl"
+          className="flex-shrink-0 flex items-center justify-between px-6 py-3.5 border-b backdrop-blur-2xl"
           style={{
             borderColor: 'rgba(168, 85, 247, 0.16)',
-            background: 'rgba(12, 7, 30, 0.65)',
+            background: 'rgba(10, 4, 25, 0.42)',
           }}
         >
           <div className="flex items-center gap-3">
